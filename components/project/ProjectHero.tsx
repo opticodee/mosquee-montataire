@@ -1,4 +1,4 @@
-import { Calendar, GraduationCap, Heart, ExternalLink } from "lucide-react";
+import { ArrowDown, Calendar, GraduationCap, Heart, ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -60,6 +60,15 @@ export function ProjectHero() {
             >
               <Calendar className="h-5 w-5" aria-hidden="true" />
               Participer en plusieurs fois
+            </Button>
+            <Button
+              href="#projet"
+              variant="outline"
+              size="lg"
+              className="w-full !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
+            >
+              <ArrowDown className="h-5 w-5" aria-hidden="true" />
+              Découvrir le projet
             </Button>
           </div>
         </div>

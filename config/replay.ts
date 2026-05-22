@@ -52,8 +52,8 @@ export type YoutubePlaylist = {
 export const youtubePlaylists: YoutubePlaylist[] = [
   {
     id: "ramadan-2026",
-    title: "Ramadan 2026",
-    description: "Discours et conférences du mois béni",
+    title: "Tarawih Ramadan 2026",
+    description: "Récitations des élèves de Cheikh Hassan El Montasser",
     url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZW0zFFwzm2-VF_nVhEtJOP7",
     accent: "gold",
   },

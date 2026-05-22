@@ -21,7 +21,7 @@ export default function ProjetLyceePage() {
     <>
       <ProjectHero />
 
-      <Section background="white" spacing="lg">
+      <Section background="white" spacing="lg" id="projet">
         <div className="mx-auto max-w-3xl">
           <p className="font-display text-xl text-primary-700 leading-relaxed">
             Aujourd&apos;hui, la Mosquée de Montataire porte un projet
