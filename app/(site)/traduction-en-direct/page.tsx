@@ -1,9 +1,10 @@
-import { Languages, Headphones, Info, ExternalLink } from "lucide-react";
+import { Languages, Headphones, Info } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CTASection } from "@/components/ui/CTASection";
+import { MixlrPlayer } from "@/components/translation/MixlrPlayer";
 import { getJumuaStream } from "@/lib/supabase";
 import { buildMetadata } from "@/lib/seo";
 
@@ -15,12 +16,6 @@ export const metadata = buildMetadata({
     "Suivez la traduction française en direct des Jumu'a et discours de la Mosquée de Montataire directement depuis votre téléphone.",
   path: "/traduction-en-direct",
 });
-
-// Lien externe conservé pour la carte discours du soir
-const translationLinks = {
-  discours:
-    "https://mosquee-montataire.fr/pages/traduction-discours-vendredi-soir-et-dimanche-soir",
-};
 
 export default async function TraductionPage() {
   const stream = await getJumuaStream();
@@ -99,7 +94,7 @@ export default async function TraductionPage() {
             </div>
 
             {/* Discours */}
-            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-gold to-gold-dark p-8 text-white shadow-elevated transition-transform hover:-translate-y-1">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gold to-gold-dark p-8 text-white shadow-elevated">
               <div className="relative">
                 <Badge
                   variant="outline"
@@ -117,18 +112,9 @@ export default async function TraductionPage() {
                   Suivez la traduction française des discours du vendredi soir
                   et du dimanche soir en direct.
                 </p>
-                <Button
-                  href={translationLinks.discours}
-                  external
-                  variant="white"
-                  size="lg"
-                  fullWidth
-                  className="mt-6"
-                >
-                  <Headphones className="h-5 w-5" aria-hidden="true" />
-                  Accéder à la traduction
-                  <ExternalLink className="h-4 w-4 opacity-70" aria-hidden="true" />
-                </Button>
+                <div className="mt-6 rounded-xl bg-white/95 p-3 shadow-soft">
+                  <MixlrPlayer />
+                </div>
               </div>
             </div>
           </div>

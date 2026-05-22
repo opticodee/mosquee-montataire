@@ -21,20 +21,21 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Voile sombre pour lisibilité - dégradé multi-couches */}
+      {/* Voile vertical : un peu sombre en haut/bas, transparent au centre */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900/80 to-primary-900/95"
+        className="absolute inset-0 bg-gradient-to-b from-primary-900/85 via-primary-900/55 to-primary-900/85"
       />
+      {/* Voile latéral : sombre à gauche (où est le texte), transparent à droite */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-primary-900/90 via-primary-900/50 to-primary-900/70"
+        className="absolute inset-0 bg-gradient-to-r from-primary-900/85 via-primary-900/35 to-primary-900/55"
       />
 
       {/* Pattern arabesque très subtil par-dessus */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-[0.08] pattern-arabesque pointer-events-none"
+        className="absolute inset-0 opacity-[0.05] pattern-arabesque pointer-events-none"
       />
 
       {/* Halo doré en haut à droite */}

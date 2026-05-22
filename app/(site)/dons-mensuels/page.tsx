@@ -1,4 +1,3 @@
-import { Heart } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { CTASection } from "@/components/ui/CTASection";
@@ -26,8 +25,20 @@ export default function DonsMensuelsPage() {
         breadcrumbs={[{ label: "Dons mensuels" }]}
       />
 
-      <Section background="cream" spacing="md">
-        <div className="mx-auto max-w-3xl rounded-3xl bg-white p-8 sm:p-10 shadow-soft border-l-4 border-gold">
+      <Section background="cream" spacing="lg">
+        <SectionHeading
+          eyebrow="Choisissez votre montant"
+          title="Soutenez la mosquée chaque mois"
+          description="À partir de 10 €/mois. Choisissez le montant qui correspond à vos moyens — tous les dons sont précieux, qu'Allah récompense votre générosité."
+          align="center"
+        />
+        <div className="mt-12">
+          <DonationGrid donations={monthlyDonations} type="monthly" />
+        </div>
+      </Section>
+
+      <Section background="white" spacing="md">
+        <div className="mx-auto max-w-3xl rounded-3xl bg-cream p-8 sm:p-10 shadow-soft border-l-4 border-gold">
           <p className="font-display text-xl sm:text-2xl text-primary-700 leading-relaxed">
             « Netflix, fast-food, abonnements… on trouve toujours 10 €. Mais
             pour la mosquée, on trouve souvent une excuse. Il est temps
@@ -36,7 +47,7 @@ export default function DonsMensuelsPage() {
         </div>
       </Section>
 
-      <Section background="white" spacing="lg">
+      <Section background="cream" spacing="lg">
         <SectionHeading
           eyebrow="Pourquoi donner chaque mois ?"
           title="La mosquée ne vit que par vos dons"
@@ -44,18 +55,6 @@ export default function DonsMensuelsPage() {
         />
         <div className="mt-12">
           <DonationImpact />
-        </div>
-      </Section>
-
-      <Section background="cream" spacing="lg">
-        <SectionHeading
-          eyebrow="Choisissez votre montant"
-          title="Une grille de dons mensuels"
-          description="Choisissez le montant qui correspond à vos moyens. Tous les dons sont précieux, qu'Allah récompense votre générosité."
-          align="center"
-        />
-        <div className="mt-12">
-          <DonationGrid donations={monthlyDonations} type="monthly" />
         </div>
       </Section>
 

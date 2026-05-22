@@ -1,4 +1,4 @@
-import { GraduationCap, Heart, ExternalLink } from "lucide-react";
+import { Calendar, GraduationCap, Heart, ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -39,12 +39,13 @@ export function ProjectHero() {
             l&apos;identité de nos jeunes.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-col sm:flex-row gap-3">
             <Button
               href={projectDonation.oneTimeUrl}
               external
               variant="gold"
               size="lg"
+              className="w-full sm:w-auto"
             >
               <Heart className="h-5 w-5" aria-hidden="true" />
               Participer en 1 fois
@@ -55,8 +56,9 @@ export function ProjectHero() {
               external
               variant="outline"
               size="lg"
-              className="!border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
+              className="w-full sm:w-auto !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
             >
+              <Calendar className="h-5 w-5" aria-hidden="true" />
               Participer en plusieurs fois
             </Button>
           </div>

@@ -1,11 +1,9 @@
-import { Clock, ExternalLink, Smartphone, Info } from "lucide-react";
+import { Clock, Smartphone, Info } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { CTASection } from "@/components/ui/CTASection";
 import { MasjidboxWidget } from "@/components/horaires/MasjidboxWidget";
-import { siteConfig } from "@/config/site";
-import { appConfig } from "@/config/app";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -64,23 +62,8 @@ export default function HorairesPage() {
             <MasjidboxWidget />
           </div>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
-            <Button
-              href={siteConfig.externalLinks.masjidbox}
-              external
-              variant="primary"
-              size="lg"
-            >
-              <Clock className="h-5 w-5" aria-hidden="true" />
-              Voir tous les horaires
-              <ExternalLink className="h-4 w-4 opacity-70" aria-hidden="true" />
-            </Button>
-            <Button
-              href={appConfig.googlePlayUrl}
-              external
-              variant="outline"
-              size="lg"
-            >
+          <div className="mt-8 flex justify-center">
+            <Button href="/application" variant="primary" size="lg">
               <Smartphone className="h-5 w-5" aria-hidden="true" />
               Télécharger l&apos;application
             </Button>

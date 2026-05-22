@@ -1,4 +1,4 @@
-import { PlayCircle, Calendar, Languages } from "lucide-react";
+import { PlayCircle, Calendar } from "lucide-react";
 import { formatDateFr } from "@/lib/utils";
 import type { Replay } from "@/config/replay";
 import { youtubeChannelUrl } from "@/config/replay";
@@ -12,12 +12,6 @@ const categoryLabels: Record<Replay["category"], string> = {
   discours: "Discours",
   conference: "Conférence",
   ramadan: "Ramadan",
-};
-
-const languageLabels: Record<Replay["language"], string> = {
-  fr: "Français",
-  ar: "Arabe",
-  "fr-ar": "Bilingue",
 };
 
 export function ReplayCard({ replay }: ReplayCardProps) {
@@ -93,10 +87,6 @@ export function ReplayCard({ replay }: ReplayCardProps) {
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
             {formatDateFr(replay.date)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Languages className="h-3.5 w-3.5" aria-hidden="true" />
-            {languageLabels[replay.language]}
           </span>
         </div>
       </div>

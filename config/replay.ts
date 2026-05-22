@@ -37,17 +37,55 @@ export const replayCategories: { value: ReplayCategory | "all"; label: string }[
     { value: "ramadan", label: "Ramadan" },
   ];
 
-export const replayLanguages: { value: ReplayLanguage | "all"; label: string }[] =
-  [
-    { value: "all", label: "Toutes langues" },
-    { value: "fr", label: "Français" },
-    { value: "ar", label: "Arabe" },
-    { value: "fr-ar", label: "Bilingue" },
-  ];
-
 // Lien direct vers la chaîne YouTube de la mosquée
 export const youtubeChannelUrl =
   "https://youtube.com/@mosqueemontataire60160";
+
+export type YoutubePlaylist = {
+  id: string;
+  title: string;
+  description?: string;
+  url: string;
+  accent?: "primary" | "gold";
+};
+
+export const youtubePlaylists: YoutubePlaylist[] = [
+  {
+    id: "ramadan-2026",
+    title: "Ramadan 2026",
+    description: "Discours et conférences du mois béni",
+    url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZW0zFFwzm2-VF_nVhEtJOP7",
+    accent: "gold",
+  },
+  {
+    id: "discours-fajr",
+    title: "Discours Fajr",
+    description: "Les discours du Fajr",
+    url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZUBvjnmP-jdwEa31v4I1Iha",
+    accent: "primary",
+  },
+  {
+    id: "jumua-fr",
+    title: "Jumu'a en français",
+    description: "Khoutbah du vendredi en français",
+    url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZWkiGwJyiXHZcrZHOJVnAEK",
+    accent: "primary",
+  },
+  {
+    id: "jumua-ar",
+    title: "Jumu'a en arabe",
+    description: "Khoutbah du vendredi en arabe",
+    url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZW2cg5fN2JeTES_7UoLeBq9",
+    accent: "primary",
+  },
+  {
+    id: "coran-sheikh",
+    title: "Coran — Sheikh Hassan El Montasser",
+    description: "Récitations par l'imam",
+    url: "https://www.youtube.com/playlist?list=PLZ2xu8sciUZWlv7I3QJcH3VragWOSNK9f",
+    accent: "gold",
+  },
+];
 
 /**
  * Replays affichés sur le site.

@@ -1,79 +1,49 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Youtube } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   replays,
   replayCategories,
-  replayLanguages,
   type ReplayCategory,
-  type ReplayLanguage,
 } from "@/config/replay";
 import { ReplayCard } from "./ReplayCard";
-import { Youtube } from "lucide-react";
 
 export function ReplayGrid() {
   const [category, setCategory] = useState<ReplayCategory | "all">("all");
-  const [language, setLanguage] = useState<ReplayLanguage | "all">("all");
 
   const filtered = useMemo(() => {
     return replays.filter((r) => {
       if (category !== "all" && r.category !== category) return false;
-      if (language !== "all" && r.language !== language) return false;
       return true;
     });
-  }, [category, language]);
+  }, [category]);
 
   return (
     <div>
       {/* Filtres */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold mb-2">
-            Catégorie
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {replayCategories.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                onClick={() => setCategory(c.value)}
-                className={cn(
-                  "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all",
-                  category === c.value
-                    ? "bg-primary-700 text-white shadow-soft"
-                    : "bg-white text-ink hover:bg-primary-50 border border-primary-100",
-                )}
-                aria-pressed={category === c.value}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="sm:text-right">
-          <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold mb-2">
-            Langue
-          </p>
-          <div className="flex flex-wrap gap-2 sm:justify-end">
-            {replayLanguages.map((l) => (
-              <button
-                key={l.value}
-                type="button"
-                onClick={() => setLanguage(l.value)}
-                className={cn(
-                  "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all",
-                  language === l.value
-                    ? "bg-gold text-white shadow-soft"
-                    : "bg-white text-ink hover:bg-primary-50 border border-primary-100",
-                )}
-                aria-pressed={language === l.value}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
+      <div className="mb-8">
+        <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold mb-2">
+          Catégorie
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {replayCategories.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => setCategory(c.value)}
+              className={cn(
+                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all",
+                category === c.value
+                  ? "bg-primary-700 text-white shadow-soft"
+                  : "bg-white text-ink hover:bg-primary-50 border border-primary-100",
+              )}
+              aria-pressed={category === c.value}
+            >
+              {c.label}
+            </button>
+          ))}
         </div>
       </div>
 

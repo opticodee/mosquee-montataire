@@ -88,6 +88,13 @@ export const services: Service[] = [
 // Cartes accès rapide sur la page d'accueil
 export const quickAccessItems: QuickAccess[] = [
   {
+    title: "Projet lycée",
+    description: "Soutenir le projet éducatif",
+    href: "/projet-lycee",
+    icon: GraduationCap,
+    accent: "gold",
+  },
+  {
     title: "Horaires de prière",
     description: "Consulter les horaires du jour",
     href: "/horaires",
@@ -121,13 +128,6 @@ export const quickAccessItems: QuickAccess[] = [
     href: "/application",
     icon: Smartphone,
     accent: "primary",
-  },
-  {
-    title: "Projet lycée",
-    description: "Soutenir le projet éducatif",
-    href: "/projet-lycee",
-    icon: GraduationCap,
-    accent: "gold",
   },
   {
     title: "Dons mensuels",
