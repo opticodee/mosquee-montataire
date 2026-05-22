@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 
 const subjects = [
   "Question générale",
@@ -43,7 +44,7 @@ export function ContactForm() {
     return e;
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const validationErrors = validate(form);
@@ -53,18 +54,26 @@ export function ContactForm() {
       return;
     }
     setErrors({});
-    setState("submitting");
 
-    try {
-      // NOTE : Pour activer l'envoi réel, créez une API route /api/contact
-      // qui utilise Resend / SendGrid / Nodemailer. Voir le README.
-      // Pour l'instant, on simule un envoi réussi.
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setState("success");
-      form.reset();
-    } catch {
-      setState("error");
-    }
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "");
+    const email = String(data.get("email") ?? "");
+    const phone = String(data.get("phone") ?? "");
+    const subject = String(data.get("subject") ?? "");
+    const message = String(data.get("message") ?? "");
+
+    const mailSubject = `[Site Mosquée] ${subject}`;
+    const mailBody =
+      `De : ${name}\n` +
+      `Email : ${email}\n` +
+      (phone ? `Téléphone : ${phone}\n` : "") +
+      `\n---\n\n${message}`;
+
+    const mailto = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+
+    window.location.href = mailto;
+    setState("success");
+    form.reset();
   }
 
   if (state === "success") {

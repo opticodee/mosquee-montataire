@@ -21,7 +21,7 @@ export const siteConfig = {
   },
 
   contact: {
-    email: "contact@mosquee-montataire.fr",
+    email: "mosquee.montataire@gmail.com",
     phone: "",
   },
 

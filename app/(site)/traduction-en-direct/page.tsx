@@ -4,7 +4,6 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CTASection } from "@/components/ui/CTASection";
-import { MixlrPlayer } from "@/components/translation/MixlrPlayer";
 import { getJumuaStream } from "@/lib/supabase";
 import { buildMetadata } from "@/lib/seo";
 
@@ -94,7 +93,7 @@ export default async function TraductionPage() {
             </div>
 
             {/* Discours */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gold to-gold-dark p-8 text-white shadow-elevated">
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-gold to-gold-dark p-8 text-white shadow-elevated transition-transform hover:-translate-y-1">
               <div className="relative">
                 <Badge
                   variant="outline"
@@ -112,9 +111,16 @@ export default async function TraductionPage() {
                   Suivez la traduction française des discours du vendredi soir
                   et du dimanche soir en direct.
                 </p>
-                <div className="mt-6 rounded-xl bg-white/95 p-3 shadow-soft">
-                  <MixlrPlayer />
-                </div>
+                <Button
+                  href="/traduction-en-direct/discours"
+                  variant="white"
+                  size="lg"
+                  fullWidth
+                  className="mt-6"
+                >
+                  <Headphones className="h-5 w-5" aria-hidden="true" />
+                  Accéder à la traduction
+                </Button>
               </div>
             </div>
           </div>

@@ -39,13 +39,13 @@ export function ProjectHero() {
             l&apos;identité de nos jeunes.
           </p>
 
-          <div className="mt-9 flex flex-col sm:flex-row gap-3">
+          <div className="mt-9 flex flex-col gap-3 max-w-md">
             <Button
               href={projectDonation.oneTimeUrl}
               external
               variant="gold"
               size="lg"
-              className="w-full sm:w-auto"
+              className="w-full"
             >
               <Heart className="h-5 w-5" aria-hidden="true" />
               Participer en 1 fois
@@ -56,7 +56,7 @@ export function ProjectHero() {
               external
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
+              className="w-full !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
             >
               <Calendar className="h-5 w-5" aria-hidden="true" />
               Participer en plusieurs fois

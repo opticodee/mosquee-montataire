@@ -42,7 +42,7 @@ export const services: Service[] = [
     icon: Clock,
   },
   {
-    title: "Jumu'a du vendredi",
+    title: "Jumu'a",
     description:
       "La prière du vendredi rassemble chaque semaine toute la communauté.",
     icon: Calendar,
