@@ -1,4 +1,12 @@
-import { GraduationCap, Sparkles, Heart, Users, ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  ExternalLink,
+  GraduationCap,
+  Heart,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -41,21 +49,33 @@ export function ProjectHighlight() {
               l&apos;équilibre et l&apos;identité de nos jeunes.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
               <Button
                 href={projectDonation.oneTimeUrl}
                 external
                 variant="gold"
                 size="lg"
+                className="w-full sm:w-auto"
               >
                 <Heart className="h-5 w-5" aria-hidden="true" />
                 Participer en 1 fois
+                <ExternalLink className="h-4 w-4 opacity-70" aria-hidden="true" />
+              </Button>
+              <Button
+                href={projectDonation.installmentUrl}
+                external
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
+              >
+                <Calendar className="h-5 w-5" aria-hidden="true" />
+                Participer en plusieurs fois
               </Button>
               <Button
                 href="/projet-lycee"
                 variant="outline"
                 size="lg"
-                className="!border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
+                className="w-full sm:w-auto !border-cream/40 !text-cream hover:!bg-cream hover:!text-primary-700"
               >
                 Découvrir le projet
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
