@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Heart, PlayCircle, MapPin } from "lucide-react";
+import { Clock, Heart, Languages, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
@@ -74,13 +74,13 @@ export function HeroSection() {
                 Faire un don
               </Button>
               <Button
-                href="/replay"
+                href="/traduction-en-direct"
                 variant="outline"
                 size="lg"
                 className="!border-cream/50 !text-cream backdrop-blur-sm hover:!bg-cream hover:!text-primary-700"
               >
-                <PlayCircle className="h-5 w-5" aria-hidden="true" />
-                Derniers discours
+                <Languages className="h-5 w-5" aria-hidden="true" />
+                Traduction en direct
               </Button>
             </div>
 

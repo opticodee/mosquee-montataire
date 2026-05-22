@@ -58,12 +58,6 @@ export default function AssociationPage() {
       description: "Cercles d'études, séminaires et veillées spirituelles.",
     },
     {
-      icon: Award,
-      title: "Concours de lecture du Coran",
-      description:
-        "Organisation d'un concours régional de la lecture et de la psalmodie du Saint Coran.",
-    },
-    {
       icon: Mic,
       title: "Conférences et débats",
       description:

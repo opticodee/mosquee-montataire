@@ -1,5 +1,5 @@
 import { HeroSection } from "@/components/home/HeroSection";
-import { PrayerTimesPreview } from "@/components/home/PrayerTimesPreview";
+import { AppHighlight } from "@/components/home/AppHighlight";
 import { QuickAccessSection } from "@/components/home/QuickAccessSection";
 import { ProjectHighlight } from "@/components/home/ProjectHighlight";
 import { MonthlyDonationHighlight } from "@/components/home/MonthlyDonationHighlight";
@@ -13,7 +13,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <PrayerTimesPreview />
+      <AppHighlight />
       <QuickAccessSection />
       <ProjectHighlight />
       <MonthlyDonationHighlight />
