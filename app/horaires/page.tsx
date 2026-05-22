@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { CTASection } from "@/components/ui/CTASection";
+import { MasjidboxWidget } from "@/components/horaires/MasjidboxWidget";
 import { siteConfig } from "@/config/site";
 import { appConfig } from "@/config/app";
 import { buildMetadata } from "@/lib/seo";
@@ -13,15 +14,6 @@ export const metadata = buildMetadata({
     "Consultez les horaires officiels des cinq prières quotidiennes et de la Jumu'a à la Mosquée de Montataire, mis à jour quotidiennement via Masjidbox.",
   path: "/horaires",
 });
-
-const prayers = [
-  { name: "Fajr", arabic: "الفجر", description: "Prière de l'aube" },
-  { name: "Dhouhr", arabic: "الظهر", description: "Prière du midi" },
-  { name: "ʿAsr", arabic: "العصر", description: "Prière de l'après-midi" },
-  { name: "Maghrib", arabic: "المغرب", description: "Prière du coucher du soleil" },
-  { name: "ʿIshāʾ", arabic: "العشاء", description: "Prière du soir" },
-  { name: "Jumu'a", arabic: "الجمعة", description: "Prière du vendredi" },
-];
 
 export default function HorairesPage() {
   return (
@@ -56,50 +48,20 @@ export default function HorairesPage() {
             </div>
           </div>
 
-          {/* Cartes prières */}
-          <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-elevated border border-primary-100">
-            <div className="border-b border-primary-100 bg-gradient-to-br from-primary-700 to-primary-900 px-6 py-5 text-cream">
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-gold-light" aria-hidden="true" />
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-cream/70 font-semibold">
-                    Mosquée de Montataire
-                  </p>
-                  <p className="font-display text-lg font-bold">
-                    Les prières quotidiennes
-                  </p>
-                </div>
+          {/* Widget Masjidbox officiel */}
+          <div className="mt-8 overflow-hidden rounded-3xl border border-primary-100 bg-white p-3 shadow-elevated sm:p-5">
+            <div className="mb-4 flex items-center gap-3 px-2">
+              <Clock className="h-5 w-5 text-primary-500" aria-hidden="true" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary-500">
+                  Mosquée de Montataire
+                </p>
+                <p className="font-display text-lg font-bold text-primary-700">
+                  Horaires officiels du jour
+                </p>
               </div>
             </div>
-
-            <ul className="divide-y divide-primary-100">
-              {prayers.map((prayer) => (
-                <li
-                  key={prayer.name}
-                  className="flex items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-primary-50/40"
-                >
-                  <div className="flex items-center gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="font-display text-2xl text-primary-700/60"
-                    >
-                      {prayer.arabic}
-                    </span>
-                    <div>
-                      <p className="font-display text-lg font-bold text-primary-700">
-                        {prayer.name}
-                      </p>
-                      <p className="text-xs text-ink-muted">
-                        {prayer.description}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-sm text-ink-muted">
-                    Voir sur Masjidbox →
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <MasjidboxWidget />
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
