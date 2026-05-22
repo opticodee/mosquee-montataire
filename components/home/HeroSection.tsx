@@ -166,16 +166,6 @@ function AddressCard() {
           </svg>
         </Link>
       </div>
-
-      {/* Badge flottant */}
-      <div className="absolute -bottom-5 -left-5 rounded-2xl border border-gold/40 bg-primary-800/90 backdrop-blur-md px-4 py-3 shadow-xl">
-        <p className="text-[10px] uppercase tracking-wider text-gold-light">
-          Prochaine prière
-        </p>
-        <p className="font-display text-lg font-bold text-cream">
-          Voir Masjidbox
-        </p>
-      </div>
     </div>
   );
 }
