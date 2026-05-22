@@ -5,21 +5,23 @@ import { ProjectHighlight } from "@/components/home/ProjectHighlight";
 import { MonthlyDonationHighlight } from "@/components/home/MonthlyDonationHighlight";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { ReplayHighlight } from "@/components/home/ReplayHighlight";
-import { AppDownloadSection } from "@/components/home/AppDownloadSection";
 import { AssociationPreview } from "@/components/home/AssociationPreview";
 import { ContactPreview } from "@/components/home/ContactPreview";
+import { NewsSection } from "@/components/home/NewsSection";
+
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <NewsSection />
+      <ProjectHighlight />
       <AppHighlight />
       <QuickAccessSection />
-      <ProjectHighlight />
       <MonthlyDonationHighlight />
       <ServicesSection />
       <ReplayHighlight />
-      <AppDownloadSection />
       <AssociationPreview />
       <ContactPreview />
     </>

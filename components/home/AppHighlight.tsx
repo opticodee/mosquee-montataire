@@ -1,4 +1,5 @@
-import { Apple, BookOpen, Clock, Newspaper, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { BookOpen, Clock, Newspaper, Sparkles } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { appConfig } from "@/config/app";
 
@@ -78,7 +79,14 @@ export function AppHighlight() {
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 rounded-xl bg-primary-900 px-5 py-3 text-white shadow-soft transition-all hover:bg-primary-700 hover:shadow-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
             >
-              <Apple className="h-7 w-7" aria-hidden="true" />
+              <svg
+                viewBox="0 0 24 24"
+                className="h-7 w-7"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+              </svg>
               <div className="text-left leading-tight">
                 <div className="text-[10px] uppercase tracking-wider opacity-80">
                   Download on the
@@ -93,62 +101,39 @@ export function AppHighlight() {
 
         {/* Colonne mockup téléphone */}
         <div className="hidden lg:flex justify-center">
-          <div className="relative">
-            <div
-              aria-hidden="true"
-              className="absolute -inset-8 rounded-full opacity-30 blur-3xl"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(201,162,39,0.4) 0%, transparent 70%)",
-              }}
-            />
-            <div className="relative w-[300px] mx-auto rounded-[2.5rem] border-[10px] border-primary-900 bg-primary-900 shadow-elevated">
-              <div className="relative aspect-[9/19] overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900">
-                <div className="absolute left-1/2 top-2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-primary-900" />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 opacity-20 pattern-arabesque pointer-events-none"
-                />
-
-                <div className="relative h-full p-5 pt-10 text-cream flex flex-col">
-                  <div className="text-center">
-                    <p className="text-[10px] uppercase tracking-wider text-gold-light">
-                      ACMDM
-                    </p>
-                    <p className="mt-1 font-display text-base font-bold">
-                      Mosquée Montataire
-                    </p>
-                  </div>
-
-                  <div className="mt-5 rounded-2xl bg-white/10 backdrop-blur-sm p-4">
-                    <p className="text-[10px] uppercase tracking-wider text-cream/70">
-                      Prochaine prière
-                    </p>
-                    <p className="mt-1 font-display text-2xl font-bold text-gold-light">
-                      ʿAsr
-                    </p>
-                    <p className="text-xs text-cream/80">Dans 2h 14min</p>
-                  </div>
-
-                  <div className="mt-4 space-y-2">
-                    {["Fajr", "Dhouhr", "ʿAsr", "Maghrib", "ʿIshāʾ"].map(
-                      (prayer) => (
-                        <div
-                          key={prayer}
-                          className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2 text-xs"
-                        >
-                          <span className="font-semibold">{prayer}</span>
-                          <span className="text-cream/70">--:--</span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PhoneMockup />
         </div>
       </div>
     </Section>
+  );
+}
+
+function PhoneMockup() {
+  return (
+    <div className="relative">
+      <div
+        aria-hidden="true"
+        className="absolute -inset-8 rounded-full opacity-30 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(201,162,39,0.4) 0%, transparent 70%)",
+        }}
+      />
+      <div className="relative w-[280px] rounded-[2.5rem] border-[10px] border-primary-900 bg-primary-900 shadow-elevated">
+        <div className="relative aspect-[9/19] overflow-hidden rounded-[1.75rem] bg-black">
+          {/* Encoche */}
+          <div className="absolute left-1/2 top-2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-primary-900" />
+          {/* Vraie capture */}
+          <Image
+            src="/app-screen-horaires.png"
+            alt="Capture d'écran de l'application ACMDM — Horaires de prière"
+            fill
+            sizes="280px"
+            className="object-cover"
+            priority
+          />
+        </div>
+      </div>
+    </div>
   );
 }

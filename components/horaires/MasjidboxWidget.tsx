@@ -40,7 +40,7 @@ export function MasjidboxWidget() {
   return (
     <div
       ref={containerRef}
-      className="masjidbox-wrapper relative min-h-[500px] w-full overflow-hidden rounded-2xl bg-white"
+      className="masjidbox-wrapper relative z-0 min-h-[500px] w-full overflow-hidden rounded-2xl bg-white"
     >
       {!loaded && (
         <div

@@ -9,7 +9,7 @@ export function OneStreamPlayer({
 }) {
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl bg-black shadow-elevated"
+      className="relative z-0 w-full overflow-hidden rounded-2xl bg-black shadow-elevated"
       style={{ paddingBottom: "56.25%" }}
     >
       <iframe

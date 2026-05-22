@@ -60,7 +60,7 @@ export function MobileMenu() {
       {/* Overlay */}
       <div
         className={cn(
-          "fixed inset-0 z-50 bg-primary-900/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-[60] bg-primary-900/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={() => setOpen(false)}
@@ -70,7 +70,7 @@ export function MobileMenu() {
       {/* Panneau */}
       <div
         className={cn(
-          "fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 lg:hidden",
+          "fixed inset-y-0 right-0 z-[60] flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 lg:hidden",
           open ? "translate-x-0" : "translate-x-full",
         )}
         role="dialog"

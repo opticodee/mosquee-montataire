@@ -4,12 +4,13 @@ import {
   CheckCircle2,
   ExternalLink,
   Info,
+  Newspaper,
   Radio,
   Save,
 } from "lucide-react";
 import { isAuthenticated } from "@/lib/admin-auth";
-import { getJumuaStream } from "@/lib/supabase";
-import { saveJumuaAction } from "./actions";
+import { getJumuaStream, getNews, type NewsItem } from "@/lib/supabase";
+import { saveJumuaAction, saveNewsAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +33,13 @@ export default async function AdminDashboardPage({
 }) {
   if (!(await isAuthenticated())) redirect("/admin/login");
 
-  const stream = await getJumuaStream();
+  const [stream, news] = await Promise.all([getJumuaStream(), getNews()]);
   const { saved } = await searchParams;
   const updatedAt = formatUpdatedAt(stream.updated_at);
+  const jumuaSaved = saved === "1";
+  const savedNewsSlot = saved?.startsWith("news")
+    ? Number(saved.slice(4))
+    : null;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 sm:py-14">
@@ -66,7 +71,7 @@ export default async function AdminDashboardPage({
         </p>
       )}
 
-      {saved && (
+      {jumuaSaved && (
         <div className="mt-6 flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-700">
           <CheckCircle2
             className="mt-0.5 h-4 w-4 shrink-0"
@@ -182,6 +187,160 @@ export default async function AdminDashboardPage({
           </div>
         </div>
       </div>
+
+      {/* Section Actualités */}
+      <div className="mt-14 flex items-center gap-3">
+        <div className="rounded-xl bg-primary-50 p-2.5 text-primary-500">
+          <Newspaper className="h-6 w-6" aria-hidden="true" />
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-primary-500">
+            Cartes affichées sur la page d&apos;accueil
+          </p>
+          <h2 className="font-display text-xl font-bold text-primary-700 sm:text-2xl">
+            Actualités
+          </h2>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-primary-100 bg-cream/60 p-5 text-sm leading-relaxed text-ink-muted">
+        <p>
+          Vous pouvez activer <strong>0 à 3 cartes</strong> d&apos;actualités.
+          Si aucune carte n&apos;est activée, la section ne s&apos;affiche pas
+          sur la page d&apos;accueil.
+        </p>
+        <p className="mt-3 font-semibold text-primary-700">
+          Exemple de HTML utilisable :
+        </p>
+        <pre className="mt-2 overflow-x-auto rounded-lg bg-primary-900 px-3 py-2 text-xs text-cream">
+{`<p><strong>Titre fort</strong></p>
+<p>Texte normal avec <em>italique</em> et <a href="#">lien</a>.</p>
+<ul>
+  <li>Point 1</li>
+  <li>Point 2</li>
+</ul>`}
+        </pre>
+      </div>
+
+      <div className="mt-6 space-y-6">
+        {news.map((item) => (
+          <NewsForm
+            key={item.slot}
+            item={item}
+            savedFlash={savedNewsSlot === item.slot}
+          />
+        ))}
+      </div>
     </div>
+  );
+}
+
+function NewsForm({
+  item,
+  savedFlash,
+}: {
+  item: NewsItem;
+  savedFlash: boolean;
+}) {
+  const updatedAt = formatUpdatedAt(item.updated_at);
+  return (
+    <form
+      action={saveNewsAction}
+      className="space-y-4 rounded-3xl border border-primary-100 bg-white p-6 shadow-soft sm:p-7"
+    >
+      <input type="hidden" name="slot" value={item.slot} />
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-display text-lg font-bold text-primary-700">
+          Actualité {item.slot}
+        </h3>
+        {item.enabled ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-green-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
+            Activée
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-200 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
+            Inactive
+          </span>
+        )}
+      </div>
+
+      {savedFlash && (
+        <div className="flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-700">
+          <CheckCircle2
+            className="mt-0.5 h-4 w-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span>Actualité {item.slot} enregistrée ✓</span>
+        </div>
+      )}
+
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-primary-100 bg-cream/60 p-3 transition-colors hover:bg-cream">
+        <input
+          type="checkbox"
+          name="enabled"
+          defaultChecked={item.enabled}
+          className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-primary-300 text-primary-700 focus:ring-primary-500"
+        />
+        <span className="text-sm">
+          <span className="block font-semibold text-primary-700">
+            Activer cette carte
+          </span>
+          <span className="mt-0.5 block text-ink-muted">
+            Affichée publiquement uniquement si activée et si le HTML est
+            renseigné.
+          </span>
+        </span>
+      </label>
+
+      <div>
+        <label
+          htmlFor={`title-${item.slot}`}
+          className="mb-1.5 block text-sm font-semibold text-primary-700"
+        >
+          Titre (optionnel)
+        </label>
+        <input
+          id={`title-${item.slot}`}
+          name="title"
+          type="text"
+          defaultValue={item.title}
+          placeholder="Ex : Ramadan 2026 — Programme"
+          className="w-full rounded-xl border border-primary-200 bg-white px-4 py-2.5 text-base text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor={`html-${item.slot}`}
+          className="mb-1.5 block text-sm font-semibold text-primary-700"
+        >
+          Contenu HTML
+        </label>
+        <textarea
+          id={`html-${item.slot}`}
+          name="html"
+          rows={10}
+          defaultValue={item.html}
+          placeholder="<p>Votre contenu HTML…</p>"
+          className="w-full rounded-xl border border-primary-200 bg-white px-4 py-3 font-mono text-sm text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        />
+      </div>
+
+      {updatedAt && (
+        <p className="text-xs text-ink-muted">
+          Dernière modification : <strong>{updatedAt}</strong>
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+      >
+        <Save className="h-4 w-4" aria-hidden="true" />
+        Sauvegarder cette actualité
+      </button>
+    </form>
   );
 }

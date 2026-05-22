@@ -21,11 +21,9 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Logo light />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-cream/80">
-              {siteConfig.legalName}. Un lieu de prière, de transmission et de
-              rassemblement, fondé en {siteConfig.history.foundedYear} et ouvert
-              depuis {siteConfig.history.openedYear}.
+              {siteConfig.legalName}
             </p>
-            <address className="mt-5 not-italic">
+            <address className="mt-3 not-italic">
               <div className="flex items-start gap-2.5 text-sm text-cream/85">
                 <MapPin
                   className="mt-0.5 h-4 w-4 shrink-0 text-gold-light"

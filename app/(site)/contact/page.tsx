@@ -24,22 +24,22 @@ export default function ContactPage() {
       />
 
       <Section background="cream" spacing="lg">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr]">
+        <div className="grid w-full max-w-full gap-10 lg:grid-cols-[1fr_1.2fr]">
           {/* Coordonnées */}
-          <div className="space-y-5">
-            <div className="rounded-3xl bg-white p-7 shadow-soft border border-primary-100">
+          <div className="w-full min-w-0 space-y-5">
+            <div className="w-full rounded-3xl bg-white p-6 shadow-soft border border-primary-100 sm:p-7">
               <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-primary-50 p-3 text-primary-500">
+                <div className="shrink-0 rounded-xl bg-primary-50 p-3 text-primary-500">
                   <MapPin className="h-6 w-6" aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold">
                     Adresse
                   </p>
-                  <p className="mt-1 font-display text-lg font-bold text-primary-700">
+                  <p className="mt-1 font-display text-lg font-bold text-primary-700 break-words">
                     {siteConfig.address.line1}
                   </p>
-                  <p className="text-ink-muted">
+                  <p className="text-ink-muted break-words">
                     {siteConfig.address.postalCode} {siteConfig.address.city},{" "}
                     {siteConfig.address.country}
                   </p>
@@ -58,18 +58,18 @@ export default function ContactPage() {
             </div>
 
             {siteConfig.contact.email && (
-              <div className="rounded-3xl bg-white p-7 shadow-soft border border-primary-100">
+              <div className="w-full rounded-3xl bg-white p-6 shadow-soft border border-primary-100 sm:p-7">
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-primary-50 p-3 text-primary-500">
+                  <div className="shrink-0 rounded-xl bg-primary-50 p-3 text-primary-500">
                     <Mail className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold">
                       Email
                     </p>
                     <a
                       href={`mailto:${siteConfig.contact.email}`}
-                      className="mt-1 inline-block font-display text-lg font-bold text-primary-700 hover:underline"
+                      className="mt-1 inline-block font-display text-lg font-bold text-primary-700 hover:underline break-all"
                     >
                       {siteConfig.contact.email}
                     </a>
@@ -78,12 +78,12 @@ export default function ContactPage() {
               </div>
             )}
 
-            <div className="rounded-3xl bg-white p-7 shadow-soft border border-primary-100">
+            <div className="w-full rounded-3xl bg-white p-6 shadow-soft border border-primary-100 sm:p-7">
               <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-primary-50 p-3 text-primary-500">
+                <div className="shrink-0 rounded-xl bg-primary-50 p-3 text-primary-500">
                   <Clock className="h-6 w-6" aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs uppercase tracking-wider text-ink-muted font-semibold">
                     Horaires de la mosquée
                   </p>
@@ -103,7 +103,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl bg-primary-700 p-7 text-cream shadow-soft">
+            <div className="w-full rounded-3xl bg-primary-700 p-6 text-cream shadow-soft sm:p-7">
               <p className="text-xs uppercase tracking-wider text-cream/70 font-semibold">
                 Réseaux sociaux
               </p>
@@ -146,7 +146,7 @@ export default function ContactPage() {
           </div>
 
           {/* Formulaire */}
-          <div>
+          <div className="w-full min-w-0">
             <div className="mb-6">
               <SectionHeading
                 eyebrow="Formulaire"

@@ -113,7 +113,7 @@ export function ContactForm() {
           label="Nom complet"
           required
           error={errors.name}
-          placeholder="Mohammed Ali"
+          placeholder="Mohamed"
         />
         <Field
           name="email"
