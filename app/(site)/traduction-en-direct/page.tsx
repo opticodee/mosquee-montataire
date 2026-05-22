@@ -1,10 +1,13 @@
-import { Languages, Headphones, PlayCircle, Info, ExternalLink } from "lucide-react";
+import { Languages, Headphones, Info, ExternalLink } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CTASection } from "@/components/ui/CTASection";
+import { getJumuaStream } from "@/lib/supabase";
 import { buildMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Traduction en direct",
@@ -13,14 +16,16 @@ export const metadata = buildMetadata({
   path: "/traduction-en-direct",
 });
 
-// Liens conservés du site existant
+// Lien externe conservé pour la carte discours du soir
 const translationLinks = {
-  jumua: "https://mosquee-montataire.fr/pages/copie-de-traduction-fr-1",
   discours:
     "https://mosquee-montataire.fr/pages/traduction-discours-vendredi-soir-et-dimanche-soir",
 };
 
-export default function TraductionPage() {
+export default async function TraductionPage() {
+  const stream = await getJumuaStream();
+  const jumuaLive = stream.enabled && stream.token.trim().length > 0;
+
   return (
     <>
       <PageHeader
@@ -61,9 +66,15 @@ export default function TraductionPage() {
                 className="absolute inset-0 opacity-10 pattern-arabesque pointer-events-none"
               />
               <div className="relative">
-                <Badge variant="gold" className="mb-4">
-                  Vendredi
-                </Badge>
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <Badge variant="gold">Vendredi</Badge>
+                  {jumuaLive && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+                      En direct
+                    </span>
+                  )}
+                </div>
                 <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/20 text-gold-light">
                   <Languages className="h-7 w-7" aria-hidden="true" />
                 </div>
@@ -75,8 +86,7 @@ export default function TraductionPage() {
                   direct depuis votre téléphone.
                 </p>
                 <Button
-                  href={translationLinks.jumua}
-                  external
+                  href="/traduction-en-direct/jumua"
                   variant="white"
                   size="lg"
                   fullWidth
@@ -84,7 +94,6 @@ export default function TraductionPage() {
                 >
                   <Headphones className="h-5 w-5" aria-hidden="true" />
                   Accéder à la traduction
-                  <ExternalLink className="h-4 w-4 opacity-70" aria-hidden="true" />
                 </Button>
               </div>
             </div>

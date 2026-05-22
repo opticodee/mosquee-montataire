@@ -1,20 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { TopAnnouncement } from "@/components/layout/TopAnnouncement";
 import { siteConfig } from "@/config/site";
-
-/**
- * Polices :
- * - On utilise des polices système avec fallback robuste pour rester rapides
- *   et fonctionner hors-ligne. Pour utiliser Google Fonts en production,
- *   décommentez le bloc next/font ci-dessous et remettez les classes du <html>.
- *
- * import { Inter, Playfair_Display } from "next/font/google";
- * const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
- * const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-display", display: "swap" });
- */
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -78,10 +64,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col bg-white text-ink antialiased">
-        <TopAnnouncement />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
