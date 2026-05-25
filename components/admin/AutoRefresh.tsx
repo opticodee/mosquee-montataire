@@ -1,0 +1,18 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+/** Rafraîchit les données serveur de la page à intervalle régulier. */
+export function AutoRefresh({ interval = 10000 }: { interval?: number }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      router.refresh();
+    }, interval);
+    return () => clearInterval(id);
+  }, [router, interval]);
+
+  return null;
+}

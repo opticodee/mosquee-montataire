@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
+  BarChart3,
   CheckCircle2,
   ExternalLink,
   Info,
@@ -43,6 +44,26 @@ export default async function AdminDashboardPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 sm:py-14">
+      <Link
+        href="/admin/analytics"
+        className="mb-10 block rounded-3xl bg-primary-700 p-6 text-cream shadow-elevated transition-all hover:bg-primary-600"
+      >
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold/20">
+            <BarChart3 className="h-6 w-6 text-gold-light" aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-gold-light">
+              Statistiques en temps réel
+            </p>
+            <p className="font-display text-xl font-bold">Analytics du site</p>
+            <p className="mt-1 text-sm text-cream/80">
+              Visiteurs en ligne, top pages, périodes personnalisées…
+            </p>
+          </div>
+        </div>
+      </Link>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-primary-500">

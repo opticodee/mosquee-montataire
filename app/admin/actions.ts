@@ -8,7 +8,7 @@ import {
   destroySession,
   isAuthenticated,
 } from "@/lib/admin-auth";
-import { setJumuaStream, setNewsItem } from "@/lib/supabase";
+import { setJumuaStream, setNewsItem, getSupabaseAdmin } from "@/lib/supabase";
 
 export async function loginAction(formData: FormData) {
   const password = String(formData.get("password") ?? "");
@@ -50,4 +50,12 @@ export async function saveNewsAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   redirect("/admin?saved=news" + slot);
+}
+
+export async function purgeOldAnalyticsAction() {
+  if (!(await isAuthenticated())) redirect("/admin/login");
+  const supabase = getSupabaseAdmin();
+  await supabase.rpc("purge_old_analytics");
+  revalidatePath("/admin/analytics");
+  redirect("/admin/analytics?purged=1");
 }
