@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Heart } from "lucide-react";
@@ -17,7 +18,11 @@ import { cn } from "@/lib/utils";
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>("Dons");
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  // Le portal ne peut cibler document.body qu'après le montage client
+  useEffect(() => setMounted(true), []);
 
   // Fermer le menu lors d'un changement de page
   useEffect(() => {
@@ -45,32 +50,33 @@ export function MobileMenu() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-primary-700 hover:bg-primary-50 lg:hidden"
-        aria-label="Ouvrir le menu"
-        aria-expanded={open}
-      >
-        <Menu className="h-6 w-6" aria-hidden="true" />
-      </button>
-
-      {/* Overlay */}
+  // L'overlay + le panneau sont rendus via un Portal directement sur
+  // <body> : ils échappent ainsi au stacking context créé par le Header
+  // (sticky + isolate), ce qui garantit qu'ils couvrent TOUTE la page —
+  // y compris les iframes Masjidbox / Mixlr — sans transparence.
+  const overlay = (
+    <div
+      className={cn(
+        // z-[100] : au-dessus de tout (header z-50, iframes, etc.)
+        "fixed inset-0 z-[100] lg:hidden",
+        open ? "pointer-events-auto" : "pointer-events-none",
+      )}
+      aria-hidden={!open}
+    >
+      {/* Backdrop sombre (le flou ne s'applique qu'au fond, jamais au panneau) */}
       <div
         className={cn(
-          "fixed inset-0 z-[60] bg-primary-900/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
-          open ? "opacity-100" : "pointer-events-none opacity-0",
+          "absolute inset-0 z-0 bg-primary-900/60 backdrop-blur-sm transition-opacity duration-300",
+          open ? "opacity-100" : "opacity-0",
         )}
         onClick={() => setOpen(false)}
         aria-hidden="true"
       />
 
-      {/* Panneau */}
-      <div
+      {/* Panneau : fond bg-white PLEIN (aucune opacité, aucun blur) */}
+      <aside
         className={cn(
-          "fixed inset-y-0 right-0 z-[60] flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 lg:hidden",
+          "absolute inset-y-0 right-0 z-10 flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300",
           open ? "translate-x-0" : "translate-x-full",
         )}
         role="dialog"
@@ -172,7 +178,23 @@ export function MobileMenu() {
             Horaires de prière
           </Button>
         </div>
-      </div>
+      </aside>
+    </div>
+  );
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-primary-700 hover:bg-primary-50 lg:hidden"
+        aria-label="Ouvrir le menu"
+        aria-expanded={open}
+      >
+        <Menu className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      {mounted ? createPortal(overlay, document.body) : null}
     </>
   );
 }
