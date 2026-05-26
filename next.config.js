@@ -73,6 +73,11 @@ const nextConfig = {
         destination: "/dons-mensuels",
         permanent: true,
       },
+      {
+        source: "/pages/telecharger-notre-application",
+        destination: "/application",
+        permanent: true,
+      },
       // Fallback : toute autre ancienne page Shopify (/pages/xxx) qui
       // n'a pas de correspondance précise → redirige vers la home
       {

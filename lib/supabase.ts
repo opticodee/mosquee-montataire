@@ -124,3 +124,57 @@ export async function setNewsItem(input: {
   });
   if (error) throw error;
 }
+
+export type Announcement = {
+  id: number;
+  enabled: boolean;
+  emoji: string;
+  message: string;
+  cta_label: string;
+  cta_url: string;
+  updated_at: string;
+};
+
+const DEFAULT_ANNOUNCEMENT: Announcement = {
+  id: 1,
+  enabled: false,
+  emoji: "",
+  message: "",
+  cta_label: "",
+  cta_url: "",
+  updated_at: "",
+};
+
+export async function getAnnouncement(): Promise<Announcement> {
+  try {
+    const supabase = getSupabasePublic();
+    const { data } = await supabase
+      .from("announcement")
+      .select("*")
+      .eq("id", 1)
+      .maybeSingle();
+    return (data as Announcement) ?? DEFAULT_ANNOUNCEMENT;
+  } catch {
+    return DEFAULT_ANNOUNCEMENT;
+  }
+}
+
+export async function setAnnouncement(input: {
+  enabled: boolean;
+  emoji: string;
+  message: string;
+  cta_label: string;
+  cta_url: string;
+}): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("announcement").upsert({
+    id: 1,
+    enabled: input.enabled,
+    emoji: input.emoji,
+    message: input.message,
+    cta_label: input.cta_label,
+    cta_url: input.cta_url,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw error;
+}

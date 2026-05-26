@@ -1,17 +1,29 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
+  ArrowRight,
   BarChart3,
   CheckCircle2,
   ExternalLink,
   Info,
+  Megaphone,
   Newspaper,
   Radio,
   Save,
 } from "lucide-react";
 import { isAuthenticated } from "@/lib/admin-auth";
-import { getJumuaStream, getNews, type NewsItem } from "@/lib/supabase";
-import { saveJumuaAction, saveNewsAction } from "./actions";
+import {
+  getAnnouncement,
+  getJumuaStream,
+  getNews,
+  type Announcement,
+  type NewsItem,
+} from "@/lib/supabase";
+import {
+  saveAnnouncementAction,
+  saveJumuaAction,
+  saveNewsAction,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,10 +46,15 @@ export default async function AdminDashboardPage({
 }) {
   if (!(await isAuthenticated())) redirect("/admin/login");
 
-  const [stream, news] = await Promise.all([getJumuaStream(), getNews()]);
+  const [stream, news, announcement] = await Promise.all([
+    getJumuaStream(),
+    getNews(),
+    getAnnouncement(),
+  ]);
   const { saved } = await searchParams;
   const updatedAt = formatUpdatedAt(stream.updated_at);
   const jumuaSaved = saved === "1";
+  const announcementSaved = saved === "announcement";
   const savedNewsSlot = saved?.startsWith("news")
     ? Number(saved.slice(4))
     : null;
@@ -64,7 +81,12 @@ export default async function AdminDashboardPage({
         </div>
       </Link>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <AnnouncementSection
+        announcement={announcement}
+        savedFlash={announcementSaved}
+      />
+
+      <div className="mt-14 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-primary-500">
             Traduction en direct
@@ -253,6 +275,202 @@ export default async function AdminDashboardPage({
         ))}
       </div>
     </div>
+  );
+}
+
+function AnnouncementSection({
+  announcement,
+  savedFlash,
+}: {
+  announcement: Announcement;
+  savedFlash: boolean;
+}) {
+  const updatedAt = formatUpdatedAt(announcement.updated_at);
+  return (
+    <section className="mt-14">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-gold/15 p-2.5 text-gold">
+            <Megaphone className="h-6 w-6" aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-500">
+              S&apos;affiche en haut de toutes les pages du site
+            </p>
+            <h2 className="font-display text-xl font-bold text-primary-700 sm:text-2xl">
+              Bandeau d&apos;annonce
+            </h2>
+          </div>
+        </div>
+        {announcement.enabled ? (
+          <span className="inline-flex items-center gap-2 self-start rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-green-700">
+            <span className="h-2 w-2 rounded-full bg-green-600" />
+            Actif
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-2 self-start rounded-full bg-gray-200 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-600">
+            <span className="h-2 w-2 rounded-full bg-gray-500" />
+            Inactif
+          </span>
+        )}
+      </div>
+
+      {updatedAt && (
+        <p className="mt-3 text-sm text-ink-muted">
+          Dernière modification : <strong>{updatedAt}</strong>
+        </p>
+      )}
+
+      {savedFlash && (
+        <div className="mt-6 flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-700">
+          <CheckCircle2
+            className="mt-0.5 h-4 w-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span>Bandeau d&apos;annonce enregistré ✓</span>
+        </div>
+      )}
+
+      <form
+        action={saveAnnouncementAction}
+        className="mt-6 space-y-5 rounded-3xl border border-primary-100 bg-white p-6 shadow-soft sm:p-8"
+      >
+        <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-primary-100 bg-cream/60 p-4 transition-colors hover:bg-cream">
+          <input
+            type="checkbox"
+            name="enabled"
+            defaultChecked={announcement.enabled}
+            className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-primary-300 text-primary-700 focus:ring-primary-500"
+          />
+          <span>
+            <span className="block font-semibold text-primary-700">
+              Activer le bandeau
+            </span>
+            <span className="mt-0.5 block text-sm text-ink-muted">
+              Désactivé, le bandeau ne s&apos;affiche pas du tout sur le site.
+            </span>
+          </span>
+        </label>
+
+        <div>
+          <label
+            htmlFor="emoji"
+            className="mb-1.5 block text-sm font-semibold text-primary-700"
+          >
+            Emoji / icône (optionnel)
+          </label>
+          <input
+            id="emoji"
+            name="emoji"
+            type="text"
+            defaultValue={announcement.emoji}
+            placeholder="📣"
+            className="w-24 rounded-xl border border-primary-200 bg-white px-4 py-3 text-base text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="message"
+            className="mb-1.5 block text-sm font-semibold text-primary-700"
+          >
+            Message
+          </label>
+          <input
+            id="message"
+            name="message"
+            type="text"
+            defaultValue={announcement.message}
+            placeholder="Projet éducatif : participons ensemble à l'ouverture du lycée."
+            className="w-full rounded-xl border border-primary-200 bg-white px-4 py-3 text-base text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="cta_label"
+            className="mb-1.5 block text-sm font-semibold text-primary-700"
+          >
+            Texte du lien (CTA)
+          </label>
+          <input
+            id="cta_label"
+            name="cta_label"
+            type="text"
+            defaultValue={announcement.cta_label}
+            placeholder="Découvrir le projet"
+            className="w-full rounded-xl border border-primary-200 bg-white px-4 py-3 text-base text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="cta_url"
+            className="mb-1.5 block text-sm font-semibold text-primary-700"
+          >
+            URL du lien
+          </label>
+          <input
+            id="cta_url"
+            name="cta_url"
+            type="text"
+            defaultValue={announcement.cta_url}
+            placeholder="/projet-lycee"
+            className="w-full rounded-xl border border-primary-200 bg-white px-4 py-3 font-mono text-sm text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+          />
+          <p className="mt-1.5 text-xs text-ink-muted">
+            Interne (ex : <code className="font-mono">/projet-lycee</code>) ou
+            externe (ex : <code className="font-mono">https://…</code>).
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-3 text-base font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+        >
+          <Save className="h-5 w-5" aria-hidden="true" />
+          Sauvegarder le bandeau
+        </button>
+      </form>
+
+      <div className="mt-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary-500">
+          Aperçu (valeurs actuellement enregistrées)
+        </p>
+        {announcement.message ? (
+          <div className="overflow-hidden rounded-2xl">
+            <div className="bg-gold text-white">
+              <div className="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-2.5 text-center text-sm">
+                {announcement.emoji && (
+                  <span
+                    className="shrink-0 text-base leading-none"
+                    aria-hidden="true"
+                  >
+                    {announcement.emoji}
+                  </span>
+                )}
+                <p className="font-medium">
+                  {announcement.message}{" "}
+                  {announcement.cta_label && announcement.cta_url && (
+                    <span className="inline-flex items-center gap-1 font-bold underline underline-offset-2">
+                      {announcement.cta_label}
+                      <ArrowRight
+                        className="h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="rounded-2xl border border-dashed border-primary-200 bg-cream/60 px-4 py-3 text-sm text-ink-muted">
+            Aucun message — le bandeau ne s&apos;affiche pas.
+          </p>
+        )}
+      </div>
+    </section>
   );
 }
 

@@ -8,7 +8,12 @@ import {
   destroySession,
   isAuthenticated,
 } from "@/lib/admin-auth";
-import { setJumuaStream, setNewsItem, getSupabaseAdmin } from "@/lib/supabase";
+import {
+  setJumuaStream,
+  setNewsItem,
+  setAnnouncement,
+  getSupabaseAdmin,
+} from "@/lib/supabase";
 
 export async function loginAction(formData: FormData) {
   const password = String(formData.get("password") ?? "");
@@ -50,6 +55,21 @@ export async function saveNewsAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   redirect("/admin?saved=news" + slot);
+}
+
+export async function saveAnnouncementAction(formData: FormData) {
+  if (!(await isAuthenticated())) redirect("/admin/login");
+  await setAnnouncement({
+    enabled: formData.get("enabled") === "on",
+    emoji: String(formData.get("emoji") ?? "").trim(),
+    message: String(formData.get("message") ?? "").trim(),
+    cta_label: String(formData.get("cta_label") ?? "").trim(),
+    cta_url: String(formData.get("cta_url") ?? "").trim(),
+  });
+  // Revalide tout le layout (site) pour recharger le bandeau partout
+  revalidatePath("/", "layout");
+  revalidatePath("/admin");
+  redirect("/admin?saved=announcement");
 }
 
 export async function purgeOldAnalyticsAction() {
