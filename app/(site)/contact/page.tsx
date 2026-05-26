@@ -2,7 +2,7 @@ import { MapPin, Mail, Navigation, Facebook, Twitter, Youtube, Clock } from "luc
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
-import { ContactForm } from "@/components/contact/ContactForm";
+import { ContactCard } from "@/components/contact/ContactCard";
 import { siteConfig } from "@/config/site";
 import { buildMetadata } from "@/lib/seo";
 
@@ -145,16 +145,9 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Formulaire */}
+          {/* Encart contact email */}
           <div className="w-full min-w-0">
-            <div className="mb-6">
-              <SectionHeading
-                eyebrow="Formulaire"
-                title="Écrivez-nous un message"
-                description="Remplissez ce formulaire pour nous contacter. Nous vous répondrons dans les meilleurs délais."
-              />
-            </div>
-            <ContactForm />
+            <ContactCard />
           </div>
         </div>
       </Section>
