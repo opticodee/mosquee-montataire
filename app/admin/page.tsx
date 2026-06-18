@@ -11,9 +11,8 @@ import {
   Save,
 } from "lucide-react";
 import { AnnouncementPreview } from "@/components/admin/AnnouncementPreview";
-import { AnnouncementPreviewContent } from "@/components/admin/AnnouncementPreviewContent";
-import { NewsCardPreviewContent } from "@/components/admin/NewsCardPreviewContent";
-import { PreviewModal } from "@/components/admin/PreviewModal";
+import { AnnouncementPreviewModal } from "@/components/admin/AnnouncementPreviewModal";
+import { NewsCardPreviewModal } from "@/components/admin/NewsCardPreviewModal";
 import { isAuthenticated } from "@/lib/admin-auth";
 import {
   getAnnouncement,
@@ -437,12 +436,7 @@ function AnnouncementSection({
             Sauvegarder le bandeau
           </button>
 
-          <PreviewModal
-            formId="announcement-form"
-            buttonLabel="Aperçu du bandeau"
-          >
-            {(values) => <AnnouncementPreviewContent values={values} />}
-          </PreviewModal>
+          <AnnouncementPreviewModal />
         </div>
       </form>
 
@@ -568,12 +562,7 @@ function NewsForm({
           Sauvegarder cette actualité
         </button>
 
-        <PreviewModal
-          formId={`news-form-${item.slot}`}
-          buttonLabel={`Aperçu actualité ${item.slot}`}
-        >
-          {(values) => <NewsCardPreviewContent values={values} />}
-        </PreviewModal>
+        <NewsCardPreviewModal slot={item.slot} />
       </div>
     </form>
   );
