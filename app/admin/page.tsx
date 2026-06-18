@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowRight,
   BarChart3,
   CheckCircle2,
   ExternalLink,
@@ -11,6 +10,7 @@ import {
   Radio,
   Save,
 } from "lucide-react";
+import { AnnouncementPreview } from "@/components/admin/AnnouncementPreview";
 import { isAuthenticated } from "@/lib/admin-auth";
 import {
   getAnnouncement,
@@ -332,6 +332,7 @@ function AnnouncementSection({
       )}
 
       <form
+        id="announcement-form"
         action={saveAnnouncementAction}
         className="mt-6 space-y-5 rounded-3xl border border-primary-100 bg-white p-6 shadow-soft sm:p-8"
       >
@@ -433,43 +434,15 @@ function AnnouncementSection({
         </button>
       </form>
 
-      <div className="mt-4">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary-500">
-          Aperçu (valeurs actuellement enregistrées)
-        </p>
-        {announcement.message ? (
-          <div className="overflow-hidden rounded-2xl">
-            <div className="bg-gold text-white">
-              <div className="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-2.5 text-center text-sm">
-                {announcement.emoji && (
-                  <span
-                    className="shrink-0 text-base leading-none"
-                    aria-hidden="true"
-                  >
-                    {announcement.emoji}
-                  </span>
-                )}
-                <p className="font-medium">
-                  {announcement.message}{" "}
-                  {announcement.cta_label && announcement.cta_url && (
-                    <span className="inline-flex items-center gap-1 font-bold underline underline-offset-2">
-                      {announcement.cta_label}
-                      <ArrowRight
-                        className="h-3.5 w-3.5"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="rounded-2xl border border-dashed border-primary-200 bg-cream/60 px-4 py-3 text-sm text-ink-muted">
-            Aucun message — le bandeau ne s&apos;affiche pas.
-          </p>
-        )}
-      </div>
+      <AnnouncementPreview
+        initial={{
+          enabled: announcement.enabled,
+          emoji: announcement.emoji,
+          message: announcement.message,
+          cta_label: announcement.cta_label,
+          cta_url: announcement.cta_url,
+        }}
+      />
     </section>
   );
 }
