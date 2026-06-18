@@ -11,6 +11,9 @@ import {
   Save,
 } from "lucide-react";
 import { AnnouncementPreview } from "@/components/admin/AnnouncementPreview";
+import { AnnouncementPreviewContent } from "@/components/admin/AnnouncementPreviewContent";
+import { NewsCardPreviewContent } from "@/components/admin/NewsCardPreviewContent";
+import { PreviewModal } from "@/components/admin/PreviewModal";
 import { isAuthenticated } from "@/lib/admin-auth";
 import {
   getAnnouncement,
@@ -425,13 +428,22 @@ function AnnouncementSection({
           </p>
         </div>
 
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-3 text-base font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-        >
-          <Save className="h-5 w-5" aria-hidden="true" />
-          Sauvegarder le bandeau
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="submit"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-3 text-base font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+          >
+            <Save className="h-5 w-5" aria-hidden="true" />
+            Sauvegarder le bandeau
+          </button>
+
+          <PreviewModal
+            formId="announcement-form"
+            buttonLabel="Aperçu du bandeau"
+          >
+            {(values) => <AnnouncementPreviewContent values={values} />}
+          </PreviewModal>
+        </div>
       </form>
 
       <AnnouncementPreview
@@ -457,6 +469,7 @@ function NewsForm({
   const updatedAt = formatUpdatedAt(item.updated_at);
   return (
     <form
+      id={`news-form-${item.slot}`}
       action={saveNewsAction}
       className="space-y-4 rounded-3xl border border-primary-100 bg-white p-6 shadow-soft sm:p-7"
     >
@@ -546,13 +559,22 @@ function NewsForm({
         </p>
       )}
 
-      <button
-        type="submit"
-        className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-      >
-        <Save className="h-4 w-4" aria-hidden="true" />
-        Sauvegarder cette actualité
-      </button>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-primary-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+        >
+          <Save className="h-4 w-4" aria-hidden="true" />
+          Sauvegarder cette actualité
+        </button>
+
+        <PreviewModal
+          formId={`news-form-${item.slot}`}
+          buttonLabel={`Aperçu actualité ${item.slot}`}
+        >
+          {(values) => <NewsCardPreviewContent values={values} />}
+        </PreviewModal>
+      </div>
     </form>
   );
 }
