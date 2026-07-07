@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { isAuthenticated } from "@/lib/admin-auth";
 import {
-  getDebugInfo,
   getLiveSessions,
   getLiveVisitors,
   getStats,
@@ -77,11 +76,10 @@ export default async function AdminAnalyticsPage({
   const { range: rawRange, purged } = await searchParams;
   const range = parseRange(rawRange);
 
-  const [liveVisitors, liveSessions, stats, debug] = await Promise.all([
+  const [liveVisitors, liveSessions, stats] = await Promise.all([
     getLiveVisitors(),
     getLiveSessions(),
     getStats(range),
-    getDebugInfo(),
   ]);
 
   const ratio =
@@ -323,87 +321,6 @@ export default async function AdminAnalyticsPage({
             Aucune donnée sur cette période.
           </p>
         )}
-      </section>
-
-      {/* 🔬 DIAGNOSTIC — à retirer une fois tout validé */}
-      <section className="mt-10 rounded-2xl border border-amber-200 bg-amber-50/60 p-5 font-mono text-xs sm:p-6">
-        <h2 className="font-sans text-base font-bold text-amber-800">
-          🔬 Diagnostic — à retirer une fois tout validé
-        </h2>
-        <p className="mt-1 font-sans text-[11px] text-amber-700/80">
-          Vérifie que la base reçoit bien des événements en temps réel.
-        </p>
-
-        <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Heure serveur (UTC)</dt>
-            <dd className="break-all text-amber-900">{debug.nowUtc}</dd>
-          </div>
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Heure serveur (Paris)</dt>
-            <dd className="break-all text-amber-900">{debug.nowParis}</dd>
-          </div>
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Borne « Aujourd&apos;hui » — start</dt>
-            <dd className="break-all text-amber-900">{debug.todayStart}</dd>
-          </div>
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Borne « Aujourd&apos;hui » — end</dt>
-            <dd className="break-all text-amber-900">{debug.todayEnd}</dd>
-          </div>
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Total événements en base</dt>
-            <dd className="text-lg font-bold text-amber-900">
-              {debug.totalEvents.toLocaleString("fr-FR")}
-            </dd>
-          </div>
-          <div className="flex flex-col">
-            <dt className="text-amber-700/70">Événements (5 dernières min)</dt>
-            <dd className="text-lg font-bold text-amber-900">
-              {debug.last5min.toLocaleString("fr-FR")}
-            </dd>
-          </div>
-          <div className="flex flex-col sm:col-span-2">
-            <dt className="text-amber-700/70">Dernier événement reçu</dt>
-            <dd className="break-all text-amber-900">
-              {debug.lastEventAt ?? "— (aucun)"}
-            </dd>
-          </div>
-        </dl>
-
-        {debug.error && (
-          <p className="mt-3 rounded-lg bg-red-100 p-2 text-red-700">
-            Erreur Supabase : {debug.error}
-          </p>
-        )}
-
-        <div className="mt-4">
-          <p className="text-amber-700/70">5 derniers événements bruts :</p>
-          {debug.lastEvents.length > 0 ? (
-            <div className="mt-2 overflow-x-auto">
-              <table className="min-w-full border-collapse text-left">
-                <thead>
-                  <tr className="text-amber-700/70">
-                    <th className="py-1 pr-4 font-medium">session</th>
-                    <th className="py-1 pr-4 font-medium">path</th>
-                    <th className="py-1 font-medium">created_at</th>
-                  </tr>
-                </thead>
-                <tbody className="text-amber-900">
-                  {debug.lastEvents.map((e, i) => (
-                    <tr key={i} className="border-t border-amber-200/60">
-                      <td className="py-1 pr-4">{e.session_id.slice(0, 8)}…</td>
-                      <td className="py-1 pr-4">{e.path}</td>
-                      <td className="whitespace-nowrap py-1">{e.created_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="mt-1 text-amber-900">Aucun événement en base.</p>
-          )}
-        </div>
       </section>
 
       {/* PURGE */}
