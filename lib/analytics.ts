@@ -71,17 +71,6 @@ function fromParisWall(wall: Date): Date {
   return new Date(guess - offset);
 }
 
-/** Jour calendaire (YYYY-MM-DD) à Paris pour un timestamp ISO UTC. */
-function parisDayString(iso: string): string {
-  // en-CA formate en "YYYY-MM-DD"
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: PARIS_TZ,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(iso));
-}
-
 /**
  * Période → intervalle [start, end] en instants UTC, mais dont les jours
  * calendaires correspondent au fuseau Europe/Paris (et non à l'UTC du serveur).
@@ -147,24 +136,26 @@ export async function trackEvent(input: {
   });
 }
 
-/** Visiteurs actifs dans les 60 dernières secondes */
+/** Visiteurs actifs dans les 60 dernières secondes (agrégé en SQL) */
 export async function getLiveVisitors(): Promise<number> {
   noStore();
   try {
     const supabase = getSupabaseAdmin();
-    const since = new Date(Date.now() - 60_000).toISOString();
-    const { data } = await supabase
-      .from("analytics_events")
-      .select("session_id")
-      .gte("created_at", since);
-    if (!data) return 0;
-    return new Set(data.map((e) => e.session_id)).size;
+    const { data } = await supabase.rpc("analytics_live_visitors", {
+      p_since_seconds: 60,
+    });
+    return Number(data ?? 0);
   } catch {
     return 0;
   }
 }
 
-/** Stats globales sur une période */
+/**
+ * Stats globales sur une période.
+ * Agrégation faite EN SQL via des RPC Postgres : indispensable car
+ * Supabase plafonne les SELECT bruts à 1000 lignes (le .limit() client
+ * est ignoré). On ne rapatrie donc que les résultats agrégés.
+ */
 export async function getStats(range: AnalyticsRange): Promise<{
   pageViews: number;
   uniqueVisitors: number;
@@ -175,54 +166,41 @@ export async function getStats(range: AnalyticsRange): Promise<{
   const empty = {
     pageViews: 0,
     uniqueVisitors: 0,
-    topPages: [],
-    byDay: [],
+    topPages: [] as { path: string; views: number }[],
+    byDay: [] as { date: string; views: number; uniques: number }[],
   };
 
   try {
     const supabase = getSupabaseAdmin();
     const { start, end } = getRangeBoundaries(range);
+    const p_start = start.toISOString();
+    const p_end = end.toISOString();
 
-    const { data: events } = await supabase
-      .from("analytics_events")
-      .select("session_id, path, created_at")
-      .gte("created_at", start.toISOString())
-      .lte("created_at", end.toISOString())
-      .limit(100000);
+    const [statsRes, topPagesRes, byDayRes] = await Promise.all([
+      supabase.rpc("analytics_get_stats", { p_start, p_end }),
+      supabase.rpc("analytics_top_pages", { p_start, p_end, p_limit: 10 }),
+      supabase.rpc("analytics_by_day", { p_start, p_end }),
+    ]);
 
-    if (!events) return empty;
+    const statsRow = (
+      statsRes.data as { page_views: number; unique_visitors: number }[] | null
+    )?.[0];
+    const pageViews = Number(statsRow?.page_views ?? 0);
+    const uniqueVisitors = Number(statsRow?.unique_visitors ?? 0);
 
-    const pageViews = events.length;
-    const uniqueVisitors = new Set(events.map((e) => e.session_id)).size;
+    const topPages = (
+      (topPagesRes.data as { path: string; views: number }[] | null) ?? []
+    ).map((r) => ({ path: r.path, views: Number(r.views) }));
 
-    // Top pages
-    const pageCount = new Map<string, number>();
-    for (const e of events) {
-      pageCount.set(e.path, (pageCount.get(e.path) ?? 0) + 1);
-    }
-    const topPages = Array.from(pageCount.entries())
-      .map(([path, views]) => ({ path, views }))
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 10);
-
-    // Par jour (jour calendaire Europe/Paris, format YYYY-MM-DD)
-    const dayMap = new Map<string, { views: number; sessions: Set<string> }>();
-    for (const e of events) {
-      const day = parisDayString(e.created_at);
-      if (!dayMap.has(day)) {
-        dayMap.set(day, { views: 0, sessions: new Set() });
-      }
-      const d = dayMap.get(day)!;
-      d.views++;
-      d.sessions.add(e.session_id);
-    }
-    const byDay = Array.from(dayMap.entries())
-      .map(([date, { views, sessions }]) => ({
-        date,
-        views,
-        uniques: sessions.size,
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+    const byDay = (
+      (byDayRes.data as
+        | { day: string; views: number; uniques: number }[]
+        | null) ?? []
+    ).map((r) => ({
+      date: r.day,
+      views: Number(r.views),
+      uniques: Number(r.uniques),
+    }));
 
     return { pageViews, uniqueVisitors, topPages, byDay };
   } catch {
