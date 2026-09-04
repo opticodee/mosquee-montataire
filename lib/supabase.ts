@@ -65,7 +65,7 @@ export async function setJumuaStream(input: {
 }
 
 export function buildOneStreamUrl(token: string): string {
-  return `https://player.onestream.live/embed?token=${token}&type=event`;
+  return `https://player.onestream.live/embed?token=${token}&type=sp`;
 }
 
 export type NewsItem = {

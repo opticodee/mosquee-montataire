@@ -159,7 +159,7 @@ export default async function AdminDashboardPage({
             name="token"
             type="text"
             defaultValue={stream.token}
-            placeholder="MjM5NDIwNDY="
+            placeholder="e6925c9afe6bd8ef12c8860a4101838961bc4bbfb6e744855d53b1062eba82a6"
             className="w-full rounded-xl border border-primary-200 bg-white px-4 py-3 font-mono text-sm text-ink placeholder:text-ink-muted/60 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
           />
         </div>
@@ -220,14 +220,22 @@ export default async function AdminDashboardPage({
             <pre className="mt-3 overflow-x-auto rounded-lg bg-primary-900 px-3 py-2 text-xs text-cream">
               https://player.onestream.live/embed?token=
               <span className="rounded bg-gold/40 px-1 py-0.5 font-bold text-gold-light">
-                MjM5NDIwNDY=
+                e6925c9afe6bd8ef12c8860a4101838961bc4bbfb6e744855d53b1062eba82a6
               </span>
-              &amp;type=event
+              &amp;type=sp
             </pre>
             <p className="mt-3">
-              Collez uniquement la partie surlignée (avant{" "}
-              <code className="font-mono">&amp;type=event</code>) dans le
-              champ ci-dessus.
+              Collez uniquement la partie surlignée, c&apos;est-à-dire ce qui se
+              trouve entre <code className="font-mono">token=</code> et{" "}
+              <code className="font-mono">&amp;type=sp</code> — sans guillemets
+              et sans le <code className="font-mono">&amp;type=sp</code>.
+            </p>
+            <p className="mt-2">
+              Les tokens actuels sont longs et au format hexadécimal (64
+              caractères), comme dans l&apos;exemple ci-dessus. Les anciens
+              tokens courts en base64 (ex.{" "}
+              <code className="font-mono">MjM5NDQzOTk=</code>) ne fonctionnent
+              plus.
             </p>
           </div>
         </div>
