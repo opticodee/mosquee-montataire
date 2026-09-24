@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>MasjidIA Promo</title>
+<link href="fonts.css" rel="stylesheet">
+<style>
+  :root {
+    --bg0: #030b08; --bg1: #0B1F18; --green: #198754; --green-l: #3ddc97;
+    --gold: #d4af37; --gold-l: #f3d77a; --cyan: #37e0ff; --cream: #f8f4ea;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg0); }
+  body { font-family: 'Inter', sans-serif; color: var(--cream); }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 35%, #0e3326 0%, #07170f 45%, var(--bg0) 100%); }
+  canvas#net { position: absolute; inset: 0; }
+  .scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; opacity: 0; will-change: opacity, transform; }
+  .display { font-family: 'Sora', sans-serif; }
+  .grad { background: linear-gradient(100deg, var(--gold-l) 0%, var(--gold) 35%, var(--cyan) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.7) 100%); }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .05;
+    background-image: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px); }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; mix-blend-mode: screen; }
+
+  /* S1 */
+  #s1 .line { font-family: 'Sora'; font-weight: 700; font-size: 92px; line-height: 1.12; text-align: center;
+    opacity: 0; letter-spacing: -2px; }
+  #s1 .small { font-size: 44px; font-weight: 400; color: rgba(248,244,234,.7); letter-spacing: 0; margin-bottom: 30px; }
+
+  /* S2 logo */
+  #mosque { width: 560px; height: 560px; }
+  svg.mosq path, svg.mosq line { fill: none; stroke: url(#lg); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+  svg.mosq circle.n { fill: var(--cyan); }
+  .brand { font-family: 'Sora'; font-weight: 800; font-size: 170px; letter-spacing: -6px; line-height: 1; margin-top: 10px; }
+  .brand .ia { filter: drop-shadow(0 0 30px rgba(55,224,255,.55)); }
+  .tag { font-family: 'Sora'; font-weight: 300; font-size: 44px; text-align: center; margin-top: 34px; line-height: 1.35; color: rgba(248,244,234,.88); }
+  .tag b { font-weight: 600; color: var(--gold-l); }
+
+  /* S3 translation */
+  .kicker { font-family: 'Sora'; font-weight: 600; font-size: 30px; letter-spacing: 8px; text-transform: uppercase; color: var(--cyan); }
+  .h2 { font-family: 'Sora'; font-weight: 800; font-size: 78px; letter-spacing: -2px; text-align: center; line-height: 1.08; margin-top: 18px; }
+  .card { width: 900px; border-radius: 40px; padding: 44px 50px; background: rgba(12, 40, 30, .72);
+    border: 2px solid rgba(212,175,55,.35); box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 0 60px rgba(55,224,255,.05); backdrop-filter: blur(6px); }
+  .card .lbl { display: flex; align-items: center; gap: 16px; font-family: 'Sora'; font-weight: 600; font-size: 28px; color: rgba(248,244,234,.75); letter-spacing: 2px; text-transform: uppercase; }
+  .live { display: inline-flex; align-items: center; gap: 10px; background: #e0344a; color: #fff; font-size: 22px; padding: 6px 16px; border-radius: 99px; letter-spacing: 2px; }
+  .live i { width: 12px; height: 12px; background: #fff; border-radius: 50%; display: block; }
+  .wave { display: flex; align-items: center; gap: 7px; height: 110px; margin: 26px 0 10px; }
+  .wave span { flex: 1; border-radius: 6px; background: linear-gradient(180deg, var(--gold-l), var(--gold)); }
+  .ar { font-family: 'Amiri', serif; font-size: 66px; line-height: 1.6; direction: rtl; text-align: right; min-height: 200px; color: var(--cream); }
+  .fr { font-family: 'Sora'; font-weight: 400; font-size: 46px; line-height: 1.4; min-height: 200px; margin-top: 22px; color: #fff; }
+  .fr .cur, .ar .cur { display: inline-block; width: 5px; height: 1em; background: var(--cyan); vertical-align: -0.15em; margin: 0 4px; }
+  .fr-card { border-color: rgba(55,224,255,.45); }
+  #core { position: relative; width: 900px; height: 250px; }
+  #core .chip { position: absolute; left: 50%; top: 50%; width: 170px; height: 170px; margin: -85px 0 0 -85px; border-radius: 38px;
+    background: linear-gradient(135deg, #0f3d2e, #062019); border: 3px solid var(--cyan);
+    display: flex; align-items: center; justify-content: center; font-family: 'Sora'; font-weight: 800; font-size: 64px; }
+  #core .ring { position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 3px solid var(--cyan); }
+  #core .pin { position: absolute; width: 4px; background: linear-gradient(180deg, transparent, var(--cyan), transparent); left: 50%; }
+  #core .pk { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
+  #core .side { position: absolute; top: 50%; font-family: 'Sora'; font-size: 26px; letter-spacing: 3px; color: rgba(55,224,255,.85); text-transform: uppercase; transform: translateY(-50%); }
+
+  /* S4 features */
+  .feat { width: 920px; display: flex; align-items: center; gap: 36px; padding: 38px 44px; margin-top: 30px; border-radius: 34px;
+    background: linear-gradient(100deg, rgba(20,60,45,.85), rgba(8,28,22,.7)); border: 2px solid rgba(55,224,255,.22);
+    position: relative; overflow: hidden; opacity: 0; }
+  .feat .ic { width: 110px; height: 110px; flex: none; border-radius: 28px; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 30% 30%, rgba(55,224,255,.35), rgba(212,175,55,.15)); border: 2px solid rgba(243,215,122,.5); }
+  .feat .ic svg { width: 60px; height: 60px; stroke: var(--gold-l); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .feat h3 { font-family: 'Sora'; font-weight: 700; font-size: 44px; line-height: 1.1; }
+  .feat p { font-size: 30px; color: rgba(248,244,234,.7); margin-top: 8px; }
+  .feat .scan { position: absolute; top: 0; bottom: 0; width: 160px; background: linear-gradient(90deg, transparent, rgba(55,224,255,.28), transparent); }
+  .feat .tagai { position: absolute; right: 34px; top: 30px; font-family: 'Sora'; font-weight: 700; font-size: 22px; color: var(--bg1);
+    background: var(--cyan); padding: 4px 14px; border-radius: 10px; letter-spacing: 2px; }
+
+  /* S5 kinetic */
+  #s5 .word { position: absolute; font-family: 'Sora'; font-weight: 800; font-size: 132px; letter-spacing: -4px; opacity: 0; text-align: center; width: 100%; }
+  #s5 .sub { position: absolute; bottom: 560px; width: 100%; text-align: center; font-family: 'Sora'; font-weight: 300; font-size: 42px; color: rgba(248,244,234,.8); opacity: 0; }
+
+  /* S6 outro */
+  #s6 .brand { font-size: 190px; }
+  .url { margin-top: 70px; font-family: 'Sora'; font-weight: 600; font-size: 40px; padding: 26px 56px; border-radius: 99px;
+    background: linear-gradient(100deg, var(--gold), var(--gold-l)); color: #0B1F18; letter-spacing: 1px; box-shadow: 0 20px 60px rgba(212,175,55,.35); }
+  .sweep { position: absolute; top: 0; bottom: 0; width: 240px; transform: skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); mix-blend-mode: overlay; }
+  .credit { position: absolute; bottom: 120px; font-size: 28px; letter-spacing: 6px; text-transform: uppercase; color: rgba(248,244,234,.55); font-family: 'Sora'; }
+  #progress { position: absolute; left: 0; bottom: 0; height: 8px; background: linear-gradient(90deg, var(--gold), var(--cyan)); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="net" width="1080" height="1920"></canvas>
+
+  <!-- S1 : accroche -->
+  <div class="scene" id="s1">
+    <div class="line small">2026 · Mosquée de Montataire</div>
+    <div class="line">Et si votre</div>
+    <div class="line">mosquée</div>
+    <div class="line grad">comprenait</div>
+    <div class="line">toutes les</div>
+    <div class="line grad">langues ?</div>
+  </div>
+
+  <!-- S2 : logo -->
+  <div class="scene" id="s2">
+    <svg id="mosque" class="mosq" viewBox="0 0 400 400">
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f3d77a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#37e0ff"/>
+        </linearGradient>
+      </defs>
+      <!-- minarets -->
+      <path class="d" d="M70 330 V150 Q70 120 85 105 Q100 120 100 150 V330"/>
+      <path class="d" d="M300 330 V150 Q300 120 315 105 Q330 120 330 150 V330"/>
+      <line class="d" x1="85" y1="105" x2="85" y2="80"/>
+      <line class="d" x1="315" y1="105" x2="315" y2="80"/>
+      <!-- dôme -->
+      <path class="d" d="M120 250 Q120 160 200 140 Q280 160 280 250"/>
+      <line class="d" x1="200" y1="140" x2="200" y2="105"/>
+      <path class="d" d="M188 100 A14 14 0 1 0 208 92"/>
+      <!-- base -->
+      <path class="d" d="M50 330 H350 V360 H50 Z"/>
+      <path class="d" d="M110 250 H290 V330 H110 Z"/>
+      <!-- circuits -->
+      <path class="d" d="M200 330 V290 H240 V270"/>
+      <path class="d" d="M170 330 V300 H140 V275"/>
+      <path class="d" d="M230 330 V310 H265"/>
+      <circle class="n" cx="240" cy="270" r="7"/>
+      <circle class="n" cx="140" cy="275" r="7"/>
+      <circle class="n" cx="265" cy="310" r="7"/>
+      <circle class="n" cx="200" cy="200" r="9"/>
+      <circle class="n" cx="85" cy="78" r="6"/>
+      <circle class="n" cx="315" cy="78" r="6"/>
+    </svg>
+    <div class="brand">Masjid<span class="ia grad">IA</span></div>
+    <div class="tag">L'<b>intelligence artificielle</b><br>au service de votre mosquée</div>
+  </div>
+
+  <!-- S3 : traduction IA -->
+  <div class="scene" id="s3" >
+    <div class="kicker" id="s3k">Traduction · IA</div>
+    <div class="h2" id="s3h">La khoutbah traduite<br><span class="grad">en temps réel</span></div>
+    <div class="card" id="arCard" style="margin-top:60px;">
+      <div class="lbl"><span class="live"><i id="liveDot"></i>EN DIRECT</span> Arabe · Imam</div>
+      <div class="wave" id="wave"></div>
+      <div class="ar" id="arText"></div>
+    </div>
+    <div id="core">
+      <div class="pin" style="top:0;height:250px;"></div>
+      <div class="ring" id="r1"></div><div class="ring" id="r2"></div>
+      <div class="pk" id="pk1"></div><div class="pk" id="pk2"></div><div class="pk" id="pk3"></div>
+      <div class="side" style="left:40px;" id="sideL">Écoute</div>
+      <div class="side" style="right:40px;" id="sideR">Traduit</div>
+      <div class="chip" id="chip"><span class="grad">IA</span></div>
+    </div>
+    <div class="card fr-card" id="frCard">
+      <div class="lbl">🇫🇷 Français · Sur votre téléphone</div>
+      <div class="fr" id="frText"></div>
+    </div>
+  </div>
+
+  <!-- S4 : fonctionnalités -->
+  <div class="scene" id="s4">
+    <div class="kicker">Propulsé par l'IA</div>
+    <div class="h2" style="margin-bottom:40px;">Une mosquée<br><span class="grad">plus intelligente</span></div>
+    <div class="feat"><div class="scan"></div><div class="tagai">IA</div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg></div>
+      <div><h3>Traduction instantanée</h3><p>Khoutbah &amp; discours en français</p></div></div>
+    <div class="feat"><div class="scan"></div><div class="tagai">IA</div>
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v5"/><path d="M8 22h8"/></svg></div>
+      <div><h3>Écoute en direct</h3><p>Une oreillette suffit, où que vous soyez</p></div></div>
+    <div class="feat"><div class="scan"></div><div class="tagai">IA</div>
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div><h3>Horaires &amp; rappels</h3><p>Les prières toujours à l'heure</p></div></div>
+    <div class="feat"><div class="scan"></div><div class="tagai">IA</div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg></div>
+      <div><h3>Tableau de bord live</h3><p>Visiteurs &amp; statistiques en temps réel</p></div></div>
+  </div>
+
+  <!-- S5 : kinetic -->
+  <div class="scene" id="s5">
+    <div class="word" id="w1">Comprendre.</div>
+    <div class="word grad" id="w2">Transmettre.</div>
+    <div class="word" id="w3">Rassembler.</div>
+    <div class="sub" id="s5sub">Grâce à l'intelligence artificielle</div>
+  </div>
+
+  <!-- S6 : outro -->
+  <div class="scene" id="s6">
+    <svg id="mosque2" class="mosq" viewBox="0 0 400 400" style="width:360px;height:360px;"></svg>
+    <div class="brand">Masjid<span class="ia grad">IA</span></div>
+    <div class="tag">La mosquée entre dans<br><b>l'ère de l'intelligence artificielle</b></div>
+    <div class="url">mosquee-montataire.fr</div>
+    <div class="sweep" id="sweep"></div>
+    <div class="credit">Mosquée de Montataire · ACMDM</div>
+  </div>
+
+  <div class="vignette"></div>
+  <div class="grain"></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+
+<script>
+const DURATION = 32;
+const $ = (s) => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeInOut = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const backOut = (x) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+// visibility window with fades
+const win = (t, a, b, fi = .4, fo = .4) => Math.min(lin(t, a, a + fi), 1 - lin(t, b - fo, b));
+
+// --- seeded random for deterministic network
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const nodes = Array.from({ length: 90 }, () => ({
+  x: rnd() * 1080, y: rnd() * 1920, ax: 20 + rnd() * 60, ay: 20 + rnd() * 60,
+  fx: .2 + rnd() * .5, fy: .2 + rnd() * .5, p: rnd() * 6.28, gold: rnd() < .3,
+}));
+const ctx = $('#net').getContext('2d');
+function drawNet(t, intensity, zoom) {
+  ctx.clearRect(0, 0, 1080, 1920);
+  const cx = 540, cy = 900;
+  const pts = nodes.map(n => {
+    let x = n.x + Math.sin(t * n.fx + n.p) * n.ax, y = n.y + Math.cos(t * n.fy + n.p) * n.ay;
+    x = cx + (x - cx) * zoom; y = cy + (y - cy) * zoom;
+    return [x, y, n.gold];
+  });
+  for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+    const dx = pts[i][0] - pts[j][0], dy = pts[i][1] - pts[j][1], d = Math.hypot(dx, dy);
+    if (d < 230) {
+      const a = (1 - d / 230) * .35 * intensity;
+      ctx.strokeStyle = `rgba(55,224,255,${a})`; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(pts[i][0], pts[i][1]); ctx.lineTo(pts[j][0], pts[j][1]); ctx.stroke();
+      // signal pulse travelling along some edges
+      if ((i * 7 + j) % 11 === 0) {
+        const k = (t * .6 + (i + j) * .13) % 1;
+        ctx.fillStyle = `rgba(243,215,122,${.9 * intensity})`;
+        ctx.beginPath(); ctx.arc(pts[i][0] - dx * k, pts[i][1] - dy * k, 3, 0, 6.29); ctx.fill();
+      }
+    }
+  }
+  for (const [x, y, g] of pts) {
+    ctx.fillStyle = g ? `rgba(243,215,122,${.85 * intensity})` : `rgba(55,224,255,${.75 * intensity})`;
+    ctx.beginPath(); ctx.arc(x, y, g ? 4 : 3, 0, 6.29); ctx.fill();
+  }
+}
+
+// --- prepare elements
+const wave = $('#wave');
+for (let i = 0; i < 48; i++) wave.appendChild(document.createElement('span'));
+const bars = [...wave.children];
+$('#mosque2').innerHTML = $('#mosque').innerHTML.replace('id="lg"', 'id="lg2"').replaceAll('url(#lg)', 'url(#lg2)');
+const dPaths = [...document.querySelectorAll('#mosque .d')];
+dPaths.forEach(p => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; });
+const dNodes = [...document.querySelectorAll('#mosque circle.n')];
+const s1Lines = [...document.querySelectorAll('#s1 .line')];
+const feats = [...document.querySelectorAll('.feat')];
+
+const AR = 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ، نَحْمَدُهُ وَنَسْتَعِينُهُ وَنَسْتَغْفِرُهُ';
+const FR = 'Louange à Allah, Seigneur des mondes. Nous Le louons, implorons Son aide et Son pardon.';
+const arWords = AR.split(' ');
+
+function show(el, o, extra = '') { el.style.opacity = o; el.style.transform = extra; el.style.visibility = o <= 0.001 ? 'hidden' : 'visible'; }
+
+function render(t) {
+  // background network intensity & zoom per scene
+  let inten = .35 + .65 * lin(t, 0, 2.5);
+  if (t > 8 && t < 16) inten = .5;
+  const zoom = 1 + t * .012;
+  drawNet(t, inten, zoom);
+
+  // flash on beats / transitions
+  const flashes = [3.6, 8.0, 16.0, 23.2, 27.6];
+  let f = 0; for (const ft of flashes) { const d = t - ft; if (d >= 0 && d < .35) f = Math.max(f, (1 - d / .35) * .55); }
+  $('#flash').style.opacity = f;
+
+  // S1
+  {
+    const o = win(t, 0, 3.7, .01, .35);
+    show($('#s1'), o, `scale(${1 + lin(t, 0, 3.7) * .06})`);
+    s1Lines.forEach((l, i) => {
+      const st = .15 + i * .42, p = easeOut(lin(t, st, st + .5));
+      l.style.opacity = p; l.style.transform = `translateY(${(1 - p) * 60}px)`;
+      l.style.filter = `blur(${(1 - p) * 12}px)`;
+    });
+  }
+  // S2
+  {
+    const o = win(t, 3.6, 8.1, .2, .35);
+    show($('#s2'), o, `scale(${1.06 - lin(t, 3.6, 8.1) * .06})`);
+    dPaths.forEach((p, i) => {
+      const st = 3.7 + i * .09, pr = easeInOut(lin(t, st, st + 1.1));
+      p.style.strokeDashoffset = p.dataset.len * (1 - pr);
+    });
+    dNodes.forEach((n, i) => {
+      const pr = backOut(lin(t, 5.0 + i * .1, 5.4 + i * .1));
+      const pulse = 1 + .3 * Math.sin(t * 6 + i);
+      n.setAttribute('r', Math.max(0, 7 * pr * pulse));
+      n.style.filter = `drop-shadow(0 0 ${8 * pulse}px #37e0ff)`;
+    });
+    const b = easeOut(lin(t, 5.2, 6.0));
+    $('#s2 .brand').style.cssText = `opacity:${b};transform:translateY(${(1 - b) * 50}px);letter-spacing:${-6 + (1 - b) * 30}px`;
+    const tg = easeOut(lin(t, 6.0, 6.8));
+    $('#s2 .tag').style.cssText = `opacity:${tg};transform:translateY(${(1 - tg) * 30}px)`;
+  }
+  // S3
+  {
+    const o = win(t, 8.0, 16.1, .2, .35);
+    show($('#s3'), o, `translateY(${(1 - easeOut(lin(t, 8, 8.6))) * 80}px)`);
+    const h = easeOut(lin(t, 8.1, 8.8));
+    $('#s3k').style.opacity = h; $('#s3h').style.opacity = h;
+    $('#s3h').style.transform = `translateY(${(1 - h) * 30}px)`;
+    const c1 = easeOut(lin(t, 8.5, 9.1));
+    $('#arCard').style.opacity = c1; $('#arCard').style.transform = `translateX(${(1 - c1) * -120}px)`;
+    $('#liveDot').style.opacity = .4 + .6 * (Math.sin(t * 8) > 0 ? 1 : 0);
+    const speaking = t > 9 && t < 13.2 ? 1 : .15;
+    bars.forEach((bar, i) => {
+      const v = Math.abs(Math.sin(i * .7 + t * 9) * Math.sin(i * .23 + t * 3.1)) * speaking;
+      bar.style.height = (10 + 95 * v) + 'px'; bar.style.opacity = .5 + v * .5;
+    });
+    const nAr = Math.floor(lin(t, 9.2, 12.4) * arWords.length + .001);
+    $('#arText').innerHTML = arWords.slice(0, nAr).join(' ') + (t < 12.6 && t > 9 ? '<span class="cur"></span>' : '');
+    // core
+    const cOn = easeOut(lin(t, 9.4, 10));
+    $('#core').style.opacity = cOn;
+    const chipPulse = 1 + .06 * Math.sin(t * 10) * (t > 10 && t < 14.5 ? 1 : .2);
+    $('#chip').style.transform = `scale(${chipPulse * backOut(lin(t, 9.4, 10))}) rotate(${(1 - cOn) * -90}deg)`;
+    $('#chip').style.boxShadow = `0 0 ${40 + 40 * Math.abs(Math.sin(t * 4))}px rgba(55,224,255,.6)`;
+    [['#r1', 0], ['#r2', .5]].forEach(([id, off]) => {
+      const k = ((t * .9 + off) % 1), s = 170 + k * 420;
+      const r = $(id); r.style.width = r.style.height = s + 'px'; r.style.margin = `${-s / 2}px 0 0 ${-s / 2}px`;
+      r.style.opacity = (1 - k) * .6 * (t > 10 && t < 15 ? 1 : 0);
+    });
+    ['#pk1', '#pk2', '#pk3'].forEach((id, i) => {
+      const k = ((t * 1.3 + i / 3) % 1);
+      const p = $(id); p.style.left = 'calc(50% - 7px)'; p.style.top = (k * 250 - 7) + 'px';
+      p.style.opacity = (t > 10 && t < 14.8) ? Math.sin(k * Math.PI) : 0;
+    });
+    $('#sideL').style.opacity = cOn * (t < 12.6 ? 1 : .3);
+    $('#sideR').style.opacity = cOn * (t > 11 ? 1 : .3);
+    const c2 = easeOut(lin(t, 10.6, 11.2));
+    $('#frCard').style.opacity = c2; $('#frCard').style.transform = `translateX(${(1 - c2) * 120}px)`;
+    const nFr = Math.floor(lin(t, 11.2, 14.4) * FR.length);
+    $('#frText').innerHTML = FR.slice(0, nFr) + (t > 11 && t < 15.5 && Math.floor(t * 3) % 2 === 0 ? '<span class="cur"></span>' : (t > 11 ? '<span class="cur" style="opacity:0"></span>' : ''));
+  }
+  // S4
+  {
+    const o = win(t, 16.0, 23.3, .2, .35);
+    show($('#s4'), o, `scale(${1.04 - lin(t, 16, 23.3) * .04})`);
+    feats.forEach((el, i) => {
+      const st = 16.5 + i * .85, p = easeOut(lin(t, st, st + .6));
+      el.style.opacity = p; el.style.transform = `translateX(${(1 - p) * (i % 2 ? 200 : -200)}px)`;
+      const sc = el.querySelector('.scan'); const k = lin(t, st + .2, st + 1.3);
+      sc.style.left = (-200 + k * 1300) + 'px'; sc.style.opacity = k > 0 && k < 1 ? 1 : 0;
+      el.style.borderColor = `rgba(55,224,255,${.22 + .5 * Math.max(0, Math.sin(k * Math.PI))})`;
+      el.querySelector('.tagai').style.transform = `scale(${backOut(lin(t, st + .5, st + .9))})`;
+    });
+  }
+  // S5
+  {
+    const o = win(t, 23.2, 27.7, .05, .25);
+    show($('#s5'), o);
+    ['#w1', '#w2', '#w3'].forEach((id, i) => {
+      const st = 23.3 + i * 1.2, e = lin(t, st, st + .35), x = lin(t, st + 1.0, st + 1.2);
+      const el = $(id); const vis = i === 2 ? e : Math.min(e, 1 - x);
+      el.style.opacity = vis;
+      el.style.top = (i === 2 ? 800 : 800) + 'px';
+      el.style.transform = `scale(${1.4 - .4 * easeOut(e) + (i === 2 ? lin(t, st, 27.7) * .08 : 0)})`;
+      el.style.filter = `blur(${(1 - e) * 20}px)`;
+    });
+    const sb = easeOut(lin(t, 26.0, 26.6)); $('#s5sub').style.opacity = sb;
+    $('#s5sub').style.transform = `translateY(${(1 - sb) * 30}px)`;
+  }
+  // S6
+  {
+    const o = win(t, 27.6, 40, .3, .1);
+    show($('#s6'), o * (1 - lin(t, 31.3, 32)));
+    const m = backOut(lin(t, 27.7, 28.4));
+    $('#mosque2').style.transform = `scale(${m})`;
+    $('#mosque2').style.filter = `drop-shadow(0 0 ${30 + 15 * Math.sin(t * 3)}px rgba(55,224,255,.5))`;
+    const b = easeOut(lin(t, 28.0, 28.7));
+    $('#s6 .brand').style.cssText = `opacity:${b};transform:scale(${.8 + .2 * b})`;
+    const tg = easeOut(lin(t, 28.6, 29.3));
+    $('#s6 .tag').style.cssText = `opacity:${tg};transform:translateY(${(1 - tg) * 30}px)`;
+    const u = backOut(lin(t, 29.2, 29.8));
+    $('#s6 .url').style.transform = `scale(${u})`;
+    $('#sweep').style.left = (-400 + lin(t, 29.8, 30.8) * 1800) + 'px';
+    $('#s6 .credit').style.opacity = lin(t, 29.8, 30.4) * .9;
+  }
+  $('#progress').style.width = (t / DURATION * 1080) + 'px';
+  $('#progress').style.opacity = .8;
+}
+window.render = render;
+window.DURATION = DURATION;
+render(0);
+// preview mode: animate in real time when opened directly
+if (!location.hash.includes('capture')) {
+  const t0 = performance.now();
+  const loop = () => { render(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); };
+  document.fonts.ready.then(loop);
+}
+</script>
+</body>
+</html>
